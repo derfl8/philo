@@ -6,7 +6,7 @@
 /*   By: abegou <abegou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/14 16:00:02 by abegou            #+#    #+#             */
-/*   Updated: 2026/03/19 15:50:30 by abegou           ###   ########.fr       */
+/*   Updated: 2026/03/22 18:30:07 by abegou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,9 @@ char		**ft_split(char const *s, char c);
 char		*ft_substr(char const *s, unsigned int start, size_t len);
 
 // structs
+typedef struct s_data	t_data;
+typedef struct s_philo	t_philo;
+
 typedef struct s_philo	{
 	int			    pid;
 	long long		last_eat;
@@ -51,5 +54,6 @@ typedef struct s_data  {
 	long long		start;
 	int				end;
 	pthread_mutex_t	*forks;
+	pthread_mutex_t	*data;
 	t_philo			*philo;
 }					t_data;
