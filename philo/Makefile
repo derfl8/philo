@@ -5,16 +5,15 @@ HEADER	= philo.h
 SRCS	=		\
 philo.c			\
 utils.c			\
-ft_strlen.c		\
-more_utils.c	\
 pthread.c		\
+init.c			\
 
 OBJS    = $(SRCS:.c=.o)
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) $(OBJS) -o $(NAME)
+	$(CC) $(OBJS) -o $(NAME) $(CFLAGS)
 
 %.o : %.c $(HEADER)
 	$(CC) $(CFLAGS) -c $< -o $@

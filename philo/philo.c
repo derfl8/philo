@@ -6,68 +6,66 @@
 /*   By: abegou <abegou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/14 15:58:59 by abegou            #+#    #+#             */
-/*   Updated: 2026/03/16 15:12:32 by abegou           ###   ########.fr       */
+/*   Updated: 2026/10/15 22:48:21 by abegou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-bool	int_check(char *arg)
+static int	argcheck(char *arg)
 {
-	int		i;
-	char	**char_to_long;
+	long long	ret;
+	int			i;
 
-	char_to_long = ft_split(arg, ' ');
-	i = 0;
-	while (char_to_long[i])
-	{
-		if (ft_strlenin(char_to_long[i]) > 11
-			|| (ft_atol(char_to_long[i]) > INT_MAX
-				|| ft_atol(char_to_long[i]) < INT_MIN))
-		{
-			ft_free(char_to_long);
-			return (false);
-		}
-		i++;
-	}
-	ft_free(char_to_long);
-	return (true);
-}
-
-bool	argcheck(char *arg)
-{
-	int	i;
-
+	i = ft_strlen(arg);
+	if (i > 12)
+		return (-1);
 	i = 0;
 	while (arg[i])
 	{
-		if (arg[i] != ' ' && arg[i] != '-' && arg[i] != '+' && (arg[i] < '0'
-				|| arg[i] > '9'))
-			return (false);
-		else if ((arg[i] == '-' || arg[i] == '+') && (arg[i + 1] == ' ' || arg[i
-					+ 1] == '-' || arg[i + 1] == '+' || arg[i + 1] == '\0'))
-			return (false);
-		else if (i > 0 && ((arg[i] == '-' || arg[i] == '-') && (arg[i
-						- 1] >= '0' && arg[i - 1] <= '9')))
-			return (false);
+		if (arg[i] < '0' || arg[i] > '9')
+			return (-1);
 		i++;
 	}
-	return (true);
+	ret = ft_atol(arg);
+	if (ret < 1 || ret > INT_MAX)
+		return (-1);
+	return (ret);
 }
 
 int	main(int ac, char **av)
 {
-	int		i;
+	t_data	data;
 
-	i = 1;
-	if (ac != 4 && ac != 5)
-		return (0);
-	while (av[i])
+	if (ac != 5 && ac != 6)
+		return (1);
+	data.nb_philos = argcheck(av[1]);
+	data.time_to_die = argcheck(av[2]);
+	data.time_to_eat = argcheck(av[3]);
+	data.time_to_sleep = argcheck(av[4]);
+	if (ac == 6)
+		data.must_eat = argcheck(av[5]);
+	else
+		data.must_eat = 0;
+	if (ac == 6 && data.must_eat < 1)
+		return (1);
+	if (data.nb_philos < 1 || data.time_to_die < 1 || data.time_to_eat < 1
+		|| data.time_to_sleep < 1)
+		return (1);
+	if (data_init(&data))
+		return (1);
+	int i = 0;
+	while (i < data.nb_philos)
 	{
-		if (argcheck(av[i]) == false)
-			return (0);
-		if (ft_atoi(av[i]) < 1 || int_check(av[i++]) == false)
-			return (0);
+		pthread_create(&data.philo[i].thread, NULL, routine, &data.philo[i]);
+		i++;
 	}
+	i = 0;
+	while (i < data.nb_philos)
+	{
+		pthread_join(data.philo[i].thread, NULL);
+		i++;
+	}
+	extermination(&data);
 	return (0);
 }
