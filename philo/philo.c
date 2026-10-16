@@ -6,7 +6,7 @@
 /*   By: abegou <abegou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/14 15:58:59 by abegou            #+#    #+#             */
-/*   Updated: 2026/10/15 22:48:21 by abegou           ###   ########.fr       */
+/*   Updated: 2026/10/16 22:10:26 by abegou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,39 +33,53 @@ static int	argcheck(char *arg)
 	return (ret);
 }
 
+static int	parsing(int ac, char **av, t_data *data)
+{
+	if (ac != 5 && ac != 6)
+		return (1);
+	data->nb_philos = argcheck(av[1]);
+	data->time_to_die = argcheck(av[2]);
+	data->time_to_eat = argcheck(av[3]);
+	data->time_to_sleep = argcheck(av[4]);
+	if (ac == 6)
+		data->must_eat = argcheck(av[5]);
+	else
+		data->must_eat = 0;
+	if (ac == 6 && data->must_eat < 1)
+		return (1);
+	if (data->nb_philos < 1 || data->time_to_die < 1 || data->time_to_eat < 1
+		|| data->time_to_sleep < 1)
+		return (1);
+	return (0);
+}
+
+static void	threads_engine(t_data *data)
+{
+	int	i;
+
+	i = 0;
+	while (i < data->nb_philos)
+	{
+		pthread_create(&data->philo[i].thread, NULL, routine, &data->philo[i]);
+		i++;
+	}
+	i = 0;
+	while (i < data->nb_philos)
+	{
+		pthread_join(data->philo[i].thread, NULL);
+		i++;
+	}
+}
+
 int	main(int ac, char **av)
 {
 	t_data	data;
 
-	if (ac != 5 && ac != 6)
-		return (1);
-	data.nb_philos = argcheck(av[1]);
-	data.time_to_die = argcheck(av[2]);
-	data.time_to_eat = argcheck(av[3]);
-	data.time_to_sleep = argcheck(av[4]);
-	if (ac == 6)
-		data.must_eat = argcheck(av[5]);
-	else
-		data.must_eat = 0;
-	if (ac == 6 && data.must_eat < 1)
-		return (1);
-	if (data.nb_philos < 1 || data.time_to_die < 1 || data.time_to_eat < 1
-		|| data.time_to_sleep < 1)
+	if (parsing(ac, av, &data))
 		return (1);
 	if (data_init(&data))
 		return (1);
-	int i = 0;
-	while (i < data.nb_philos)
-	{
-		pthread_create(&data.philo[i].thread, NULL, routine, &data.philo[i]);
-		i++;
-	}
-	i = 0;
-	while (i < data.nb_philos)
-	{
-		pthread_join(data.philo[i].thread, NULL);
-		i++;
-	}
+	threads_engine(&data);
 	extermination(&data);
 	return (0);
 }

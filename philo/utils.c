@@ -15,16 +15,16 @@
 long long	ft_time(void)
 {
 	struct timeval	tv;
-	long long	ret;
+	long long		ret;
 
-	gettimeofday(&tv,NULL);
+	gettimeofday(&tv, NULL);
 	ret = tv.tv_sec * 1000 + tv.tv_usec / 1000;
 	return (ret);
 }
 
 void	enhanced_usleep(long long ms)
 {
-	long long start;
+	long long	start;
 
 	start = ft_time();
 	while (ft_time() - start < ms)

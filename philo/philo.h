@@ -59,7 +59,7 @@ void					enhanced_usleep(long long ms);
 
 // init.c
 int						data_init(t_data *data);
-void    				extermination(t_data *data);
+void					extermination(t_data *data);
 
 // pthread.c
 void					print_status(t_philo *philo, char *msg);
