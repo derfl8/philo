@@ -6,11 +6,12 @@
 /*   By: abegou <abegou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 14:46:02 by abegou            #+#    #+#             */
-/*   Updated: 2026/10/16 22:29:34 by abegou           ###   ########.fr       */
+/*   Updated: 2026/10/16 23:48:36 by abegou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+#include <pthread.h>
 
 static void	foodie(t_philo *philo)
 {
@@ -28,13 +29,23 @@ static void	foodie(t_philo *philo)
 	pthread_mutex_unlock(philo->rfork);
 }
 
-void	*schopenhauer(t_philo *philo)
+static void	*schopenhauer(t_philo *philo)
 {
 	pthread_mutex_lock(philo->lfork);
 	print_status(philo, "has taken a fork");
 	enhanced_usleep(philo->data->time_to_die);
 	pthread_mutex_unlock(philo->lfork);
 	return (NULL);
+}
+
+static int	finish_is_it(t_data *data)
+{
+	int	returned;
+
+	pthread_mutex_lock(&data->print_lock);
+	returned = data->end;
+	pthread_mutex_unlock(&data->print_lock);
+	return (returned);
 }
 
 void	*routine(void *arg)
@@ -46,7 +57,7 @@ void	*routine(void *arg)
 		return (schopenhauer(philo));
 	if (philo->pid % 2 == 0)
 		enhanced_usleep(philo->data->time_to_eat / 2);
-	while (1)
+	while (!finish_is_it(philo->data))
 	{
 		foodie(philo);
 		print_status(philo, "is sleeping");
@@ -59,6 +70,7 @@ void	*routine(void *arg)
 void	print_status(t_philo *philo, char *msg)
 {
 	pthread_mutex_lock(&philo->data->print_lock);
-	printf("%lld %d %s\n", ft_time() - philo->data->start, philo->pid, msg);
+	if (!philo->data->end)
+		printf("%lld %d %s\n", ft_time() - philo->data->start, philo->pid, msg);
 	pthread_mutex_unlock(&philo->data->print_lock);
 }
