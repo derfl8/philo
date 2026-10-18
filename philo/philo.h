@@ -6,7 +6,7 @@
 /*   By: abegou <abegou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/14 16:00:02 by abegou            #+#    #+#             */
-/*   Updated: 2026/10/15 22:48:31 by abegou           ###   ########.fr       */
+/*   Updated: 2026/10/18 20:37:01 by abegou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,5 +64,8 @@ void					extermination(t_data *data);
 // pthread.c
 void					print_status(t_philo *philo, char *msg);
 void					*routine(void *arg);
+
+// monitor.c
+void					monitor(t_data *data);
 
 #endif

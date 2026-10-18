@@ -6,12 +6,11 @@
 /*   By: abegou <abegou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 14:46:02 by abegou            #+#    #+#             */
-/*   Updated: 2026/10/16 23:48:36 by abegou           ###   ########.fr       */
+/*   Updated: 2026/10/18 20:37:15 by abegou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-#include <pthread.h>
 
 static void	foodie(t_philo *philo)
 {
@@ -63,6 +62,9 @@ void	*routine(void *arg)
 		print_status(philo, "is sleeping");
 		enhanced_usleep(philo->data->time_to_sleep);
 		print_status(philo, "is thinking");
+		if (philo->data->nb_philos % 2 == 1)
+			enhanced_usleep(philo->data->time_to_eat * 2
+				- philo->data->time_to_sleep);
 	}
 	return (NULL);
 }

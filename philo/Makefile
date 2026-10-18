@@ -7,6 +7,7 @@ philo.c			\
 utils.c			\
 pthread.c		\
 init.c			\
+monitor.c		\
 
 OBJS    = $(SRCS:.c=.o)
 

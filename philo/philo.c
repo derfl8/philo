@@ -6,7 +6,7 @@
 /*   By: abegou <abegou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/14 15:58:59 by abegou            #+#    #+#             */
-/*   Updated: 2026/10/16 22:10:26 by abegou           ###   ########.fr       */
+/*   Updated: 2026/10/18 20:09:20 by abegou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ static void	threads_engine(t_data *data)
 		pthread_create(&data->philo[i].thread, NULL, routine, &data->philo[i]);
 		i++;
 	}
+	monitor(data);
 	i = 0;
 	while (i < data->nb_philos)
 	{
